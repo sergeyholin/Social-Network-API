@@ -16,7 +16,7 @@ const userSchema = new Schema(
     },
     thoughts: [{
         type: Schema.Types.ObjectId,
-        ref: 'Thoughts'
+        ref: 'Thought'
       }],
       friends: [{
         type: Schema.Types.ObjectId,
@@ -31,7 +31,7 @@ const userSchema = new Schema(
     });
     
 userSchema
-  .virtual('friendsCount')
+  .virtual('friendCount')
   .get(function () {
   return this.friends.length;
   });
