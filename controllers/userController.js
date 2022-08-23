@@ -1,39 +1,48 @@
 const { User } = require('../models');
 
 module.exports = {
-    // Get all users------------------------------------------------------------------------
+    // Get all Users==================================================================================
     getUsers(req, res) {
       User.find()
-        .then((users) => res.json(users))
+        .then((users) => 
+        !users
+           ? res.status(404).json({ message: 'No users found!' })
+           : res.json(users)
+        )
         .catch((err) => res.status(500).json(err));
     },
-    // Get user by id------------------------------------------------------------------------
+    // Get User by ID=================================================================================
     getUser(req, res) {
       User.findOne({ _id: req.params.userId })
         .select('-__v')
         .then((user) =>
           !user
-            ? res.status(404).json({ message: 'No user with that ID' })
+            ? res.status(404).json({ message: 'There is no user with such ID!' })
             : res.json(user)
         )
         .catch((err) => res.status(500).json(err));
     },
-    // Create user---------------------------------------------------------------------------
+    // Create User====================================================================================
     createUser(req, res) {
       User.create(req.body)
-        .then((user) => res.json(user))
-        .catch((err) => {
-          console.log(err);
-          return res.status(500).json(err);
-        });
-    },
-    // Delete user------------------------------------------------------------------------
-    deleteUser(req, res) {
-      User.findOneAndDelete({ _id: req.params.userId })
-        .then(() => res.json({ message: 'User deleted!' }))
+        .then((user) => 
+        !user
+          ? res.status(404).json({ message: 'User was not created!' })
+          : res.json(user)
+        )
         .catch((err) => res.status(500).json(err));
     },
-    // Update user------------------------------------------------------------------------
+    // Delete User====================================================================================
+    deleteUser(req, res) {
+      User.findOneAndDelete({ _id: req.params.userId })
+        .then((user) => 
+        !user
+        ? res.status(404).json({ message: 'There is no user with such ID!' })
+        : res.json({ message: 'User deleted!' })
+        )
+        .catch((err) => res.status(500).json(err));
+    },
+    // Update User====================================================================================
     updateUser(req, res) {
       User.findOneAndUpdate(
         { _id: req.params.userId },
@@ -42,13 +51,12 @@ module.exports = {
       )
         .then((user) =>
           !user
-            ? res.status(404).json({ message: 'No user with this id!' })
+            ? res.status(404).json({ message: 'There is no user with such ID!' })
             : res.json(user)
         )
         .catch((err) => res.status(500).json(err));
     },
-  
-  // Add Friend-----------------------------------------------------------------------------
+  // Add Friend=======================================================================================
   addFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
@@ -57,12 +65,12 @@ module.exports = {
     )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: 'No user with this id!' })
+          ? res.status(404).json({ message: 'There is no user with such ID!' })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Delete friend-----------------------------------------------------------------------------
+  // Delete Friend====================================================================================
   deleteFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
@@ -71,7 +79,7 @@ module.exports = {
     )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: 'No user with this id!' })
+          ? res.status(404).json({ message: 'There is no user with such ID!' })
           : res.json({ message: 'Friend deleted!' })
       )
       .catch((err) => res.status(500).json(err));
